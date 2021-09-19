@@ -50,7 +50,7 @@ AppAsset::register($this);
   
   <!-- Nav Item - Charts -->
   <li class="nav-item">
-    <a class="nav-link" href="charts.html">
+    <a class="nav-link" href="<?php echo Url::to(['product/index']); ?>">
       <i class="fas fa-fw fa-chart-area"></i>
       <span>Products</span></a>
   </li>
@@ -236,7 +236,7 @@ AppAsset::register($this);
         <!-- Nav Item - User Information -->
         <li class="nav-item dropdown no-arrow">
           <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            <span class="mr-2 d-none d-lg-inline text-gray-600 small"><?php echo Yii::$app->user->identity->getDisplayName(); ?></span>
+            <span class="mr-2 d-none d-lg-inline text-gray-600 small"><?php echo Yii::$app->user->identity ? Yii::$app->user->identity->getDisplayName() : ''; ?></span>
             <img class="img-profile rounded-circle" src="img/undraw_profile.svg">
           </a>
           <!-- Dropdown - User Information -->
@@ -269,7 +269,9 @@ AppAsset::register($this);
     <!-- Begin Page Content -->
 
     <!-- /.container-fluid -->
-    <?php echo $content; ?>
+    <div class="p-4">
+      <?php echo $content; ?>
+    </div>
   </div>
   <!-- End of Main Content -->
 
