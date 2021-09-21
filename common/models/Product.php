@@ -57,9 +57,9 @@ class Product extends \yii\db\ActiveRecord
             'id' => 'ID',
             'name' => 'Name',
             'description' => 'Description',
-            'image' => 'Image',
+            'image' => 'Product Image',
             'price' => 'Price',
-            'status' => 'Status',
+            'status' => 'Published',
             'created_at' => 'Created At',
             'updatet_at' => 'Updatet At',
         ];
@@ -72,7 +72,7 @@ class Product extends \yii\db\ActiveRecord
      */
     public function getCartItems()
     {
-        return $this->hasMany(CartItems::className(), ['product_id' => 'id']);
+        return $this->hasMany(CartItem::className(), ['product_id' => 'id']);
     }
 
     /**
@@ -82,7 +82,7 @@ class Product extends \yii\db\ActiveRecord
      */
     public function getCreatedAt()
     {
-        return $this->hasOne(User::className(), ['id' => 'created_at']);
+        return $this->hasOne(User::class, ['id' => 'created_at']);
     }
 
     /**
@@ -92,7 +92,7 @@ class Product extends \yii\db\ActiveRecord
      */
     public function getOrderItems()
     {
-        return $this->hasMany(OrderItems::className(), ['product_id' => 'id']);
+        return $this->hasMany(OrderItem::class, ['product_id' => 'id']);
     }
 
     /**
