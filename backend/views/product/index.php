@@ -24,16 +24,54 @@ $this->params['breadcrumbs'][] = $this->title;
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
         'columns' => [
-            ['class' => 'yii\grid\SerialColumn'],
+            // ['class' => 'yii\grid\SerialColumn'],
 
-            'id',
+            [
+              'attribute' => 'id',
+              'contentOptions' => [
+                'style' => 'width:80px'
+              ]
+            ],
+            [
+              'attribute' => 'image',
+              'content' => function($data){
+                /**
+                 * @var $data common\models\Product
+                 */
+                return Html::img($data->getImageUrl(), ['width' => '100px']);
+              }
+            ],
             'name',
             'description:ntext',
-            'image',
-            'price',
-            //'status',
-            //'created_at',
-            //'updatet_at',
+            [
+              'attribute' => 'price',
+              'format' => 'currency'
+            ],
+            [
+              'attribute' => 'status',
+              'contentOptions' => ['style' => 'width: 40px'],
+              'content' => function($model){
+                /**
+                 * @var $model common\models\Product
+                 */
+                return Html::tag('span', $model->status ? 'Active' : 'Draft', [
+                  'class' => $model->status ? 'badge badge-success' : 'badge badge-danger'
+                ]);
+              }
+            ],
+            // 'created_at:datetime',
+            [
+              'attribute' => 'created_at',
+              'format' => ['date'],
+              'contentOptions' => ['style' => 'white-space:pre-line']
+            ],
+            [
+              'attribute' => 'updated_at',
+              'format' => ['date'],
+              'contentOptions' => ['style' => 'white-space:pre-line']
+            ],
+            //'created_by',
+            //'updated_by',
 
             ['class' => 'yii\grid\ActionColumn'],
         ],

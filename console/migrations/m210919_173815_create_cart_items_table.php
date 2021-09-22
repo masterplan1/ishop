@@ -64,27 +64,27 @@ class m210919_173815_create_cart_items_table extends Migration
      */
     public function safeDown()
     {
-        // drops foreign key for table `{{%products}}`
-        $this->dropForeignKey(
-            '{{%fk-cart_items-product_id}}',
-            '{{%cart_items}}'
-        );
+        // // drops foreign key for table `{{%products}}`
+        // $this->dropForeignKey(
+        //     '{{%fk-cart_items-product_id}}',
+        //     '{{%cart_items}}'
+        // );
 
-        // drops index for column `product_id`
-        $this->dropIndex(
-            '{{%idx-cart_items-product_id}}',
-            '{{%cart_items}}'
-        );
+        // // drops index for column `product_id`
+        // $this->dropIndex(
+        //     '{{%idx-cart_items-product_id}}',
+        //     '{{%cart_items}}'
+        // );
 
         // drops foreign key for table `{{%order}}`
         $this->dropForeignKey(
-            '{{%fk-cart_items-order_id}}',
+            '{{%fk-cart_items-created_by}}',
             '{{%cart_items}}'
         );
 
         // drops index for column `order_id`
         $this->dropIndex(
-            '{{%idx-cart_items-order_id}}',
+            '{{%idx-cart_items-created_by}}',
             '{{%cart_items}}'
         );
 

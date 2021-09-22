@@ -9,5 +9,9 @@ return [
         'cache' => [
             'class' => 'yii\caching\FileCache',
         ],
+        'formatter' => [
+            'dateFormat' => 'php:d.m.y h:i',
+            'currencyCode' => 'EUR'
+        ]
     ],
 ];

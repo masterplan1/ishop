@@ -3,6 +3,9 @@
 namespace common\models;
 
 use Yii;
+use yii\behaviors\BlameableBehavior;
+use yii\behaviors\TimestampBehavior;
+use yii\helpers\FileHelper;
 
 /**
  * This is the model class for table "{{%products}}".
@@ -14,15 +17,19 @@ use Yii;
  * @property float $price
  * @property int $status
  * @property int|null $created_at
- * @property int|null $updatet_at
+ * @property int|null $updated_at
+ * @property int|null $created_by
+ * @property int|null $updated_by
  *
  * @property CartItems[] $cartItems
- * @property User $createdAt
+ * @property User $createdBy
  * @property OrderItems[] $orderItems
- * @property User $updatetAt
+ * @property User $updatedBy
+ * @property yii\web\UploadedFile imageFile
  */
 class Product extends \yii\db\ActiveRecord
 {
+    public $imageFile;
     /**
      * {@inheritdoc}
      */
@@ -31,6 +38,13 @@ class Product extends \yii\db\ActiveRecord
         return '{{%products}}';
     }
 
+    public function behaviors()
+    {
+      return [
+        TimestampBehavior::class,
+        BlameableBehavior::class
+      ];
+    }
     /**
      * {@inheritdoc}
      */
@@ -40,11 +54,12 @@ class Product extends \yii\db\ActiveRecord
             [['name', 'price', 'status'], 'required'],
             [['description'], 'string'],
             [['price'], 'number'],
-            [['status', 'created_at', 'updatet_at'], 'integer'],
+            [['imageFile'], 'image', 'extensions' => 'png jpg jpeg'],
+            [['status', 'created_at', 'updated_at', 'created_by', 'updated_by'], 'integer'],
             [['name'], 'string', 'max' => 255],
             [['image'], 'string', 'max' => 2000],
-            [['created_at'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['created_at' => 'id']],
-            [['updatet_at'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['updatet_at' => 'id']],
+            [['created_by'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['created_by' => 'id']],
+            [['updated_by'], 'exist', 'skipOnError' => true, 'targetClass' => User::className(), 'targetAttribute' => ['updated_by' => 'id']],
         ];
     }
 
@@ -57,11 +72,14 @@ class Product extends \yii\db\ActiveRecord
             'id' => 'ID',
             'name' => 'Name',
             'description' => 'Description',
-            'image' => 'Product Image',
+            'image' => 'Image',
             'price' => 'Price',
-            'status' => 'Published',
+            'status' => 'Status',
+            'imageFile' => 'Product Image',
             'created_at' => 'Created At',
-            'updatet_at' => 'Updatet At',
+            'updated_at' => 'Updated At',
+            'created_by' => 'Created By',
+            'updated_by' => 'Updated By',
         ];
     }
 
@@ -76,13 +94,13 @@ class Product extends \yii\db\ActiveRecord
     }
 
     /**
-     * Gets query for [[CreatedAt]].
+     * Gets query for [[CreatedBy]].
      *
      * @return \yii\db\ActiveQuery|\common\models\query\UserQuery
      */
-    public function getCreatedAt()
+    public function getCreatedBy()
     {
-        return $this->hasOne(User::class, ['id' => 'created_at']);
+        return $this->hasOne(User::className(), ['id' => 'created_by']);
     }
 
     /**
@@ -92,17 +110,17 @@ class Product extends \yii\db\ActiveRecord
      */
     public function getOrderItems()
     {
-        return $this->hasMany(OrderItem::class, ['product_id' => 'id']);
+        return $this->hasMany(OrderItem::className(), ['product_id' => 'id']);
     }
 
     /**
-     * Gets query for [[UpdatetAt]].
+     * Gets query for [[UpdatedBy]].
      *
      * @return \yii\db\ActiveQuery|\common\models\query\UserQuery
      */
-    public function getUpdatetAt()
+    public function getUpdatedBy()
     {
-        return $this->hasOne(User::className(), ['id' => 'updatet_at']);
+        return $this->hasOne(User::className(), ['id' => 'updated_by']);
     }
 
     /**
@@ -112,5 +130,28 @@ class Product extends \yii\db\ActiveRecord
     public static function find()
     {
         return new \common\models\query\ProductQuery(get_called_class());
+    }
+
+    public function save($runValidation = true, $attributeNames = null)
+    {
+        if($this->imageFile){
+            $this->image = '/products/'. Yii::$app->security->generateRandomString(32) . $this->imageFile->name;
+        }
+        $transaction = Yii::$app->db->beginTransaction();
+        $ok = parent::save($runValidation, $attributeNames);
+        if($ok){
+            $fullpath = Yii::getAlias('@frontend/web/storage') . $this->image;
+            $dir = dirname($fullpath);
+            if(!FileHelper::createDirectory($dir) || !$this->imageFile->saveAs($fullpath)){
+                $transaction->rollBack();
+                return false;
+            }
+            $transaction->commit();
+        }
+        return $ok;
+    }
+
+    public function getImageUrl(){
+      return Yii::$app->params['frontendUrl'] . 'storage' . $this->image;
     }
 }
