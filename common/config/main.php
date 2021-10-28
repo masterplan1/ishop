@@ -1,4 +1,7 @@
 <?php
+
+use common\i18n\Formatter;
+
 return [
     'aliases' => [
         '@bower' => '@vendor/bower-asset',
@@ -10,7 +13,9 @@ return [
             'class' => 'yii\caching\FileCache',
         ],
         'formatter' => [
-            'dateFormat' => 'php:d.m.y h:i',
+            'class' => Formatter::class,
+            'dateFormat' => 'php:d.m.y',
+            'datetimeFormat' => 'php:d.m.y H:i',
             'currencyCode' => 'EUR'
         ]
     ],

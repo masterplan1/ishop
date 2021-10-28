@@ -1,0 +1,27 @@
+#orderItems td, th{
+  white-space: nowrap;
+}
+#orderItems th a.asc::after{
+  content: '\f077';
+  font-family: "Font Awesome 5 Free";
+  -webkit-font-smoothing: antialiased;
+  display: inline-block;
+  font-style: normal;
+  font-variant: normal;
+  text-rendering: auto;
+  line-height: 1;
+  font-weight: 900;
+  margin-left: 10px;
+}
+#orderItems th a.desc::after{
+  content: '\f078';
+  font-family: "Font Awesome 5 Free";
+  -webkit-font-smoothing: antialiased;
+  display: inline-block;
+  font-style: normal;
+  font-variant: normal;
+  text-rendering: auto;
+  line-height: 1;
+  font-weight: 900;
+  margin-left: 10px;
+}

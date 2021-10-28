@@ -6,6 +6,7 @@ use Yii;
 use yii\behaviors\BlameableBehavior;
 use yii\behaviors\TimestampBehavior;
 use yii\helpers\FileHelper;
+use yii\helpers\StringHelper;
 
 /**
  * This is the model class for table "{{%products}}".
@@ -132,6 +133,10 @@ class Product extends \yii\db\ActiveRecord
         return new \common\models\query\ProductQuery(get_called_class());
     }
 
+    private static function getImagePath($imageUrl){
+      return Yii::getAlias('@frontend/web/storage') . $imageUrl;
+    }
+
     public function save($runValidation = true, $attributeNames = null)
     {
         if($this->imageFile){
@@ -139,19 +144,32 @@ class Product extends \yii\db\ActiveRecord
         }
         $transaction = Yii::$app->db->beginTransaction();
         $ok = parent::save($runValidation, $attributeNames);
-        if($ok){
-            $fullpath = Yii::getAlias('@frontend/web/storage') . $this->image;
+        if($ok && !empty($this->imageFile)){
+            $fullpath = self::getImagePath($this->image);
             $dir = dirname($fullpath);
             if(!FileHelper::createDirectory($dir) || !$this->imageFile->saveAs($fullpath)){
                 $transaction->rollBack();
                 return false;
             }
-            $transaction->commit();
         }
+        $transaction->commit();
         return $ok;
     }
 
     public function getImageUrl(){
-      return Yii::$app->params['frontendUrl'] . 'storage' . $this->image;
+    
+        return self::formatImageUrl($this->image);
+      
+    }
+
+    public static function formatImageUrl($imageUrl){
+        if($imageUrl && file_exists(self::getImagePath($imageUrl))){
+        return Yii::$app->params['frontendUrl'] . 'storage' . $imageUrl;
+        }
+        return Yii::$app->params['frontendUrl'] . 'img/no_image.svg';
+    }
+
+    public function getShortDescription(){
+        return StringHelper::truncateWords(strip_tags($this->description), 30);
     }
 }

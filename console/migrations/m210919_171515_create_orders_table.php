@@ -29,21 +29,21 @@ class m210919_171515_create_orders_table extends Migration
         ]);
 
         // creates index for column `created_at`
-        $this->createIndex(
-            '{{%idx-orders-created_at}}',
-            '{{%orders}}',
-            'created_at'
-        );
+        // $this->createIndex(
+        //     '{{%idx-orders-created_at}}',
+        //     '{{%orders}}',
+        //     'created_at'
+        // );
 
         // add foreign key for table `{{%user}}`
-        $this->addForeignKey(
-            '{{%fk-orders-created_at}}',
-            '{{%orders}}',
-            'created_at',
-            '{{%user}}',
-            'id',
-            'CASCADE'
-        );
+        // $this->addForeignKey(
+        //     '{{%fk-orders-created_at}}',
+        //     '{{%orders}}',
+        //     'created_at',
+        //     '{{%user}}',
+        //     'id',
+        //     'CASCADE'
+        // );
 
         // creates index for column `created_by`
         $this->createIndex(
@@ -69,16 +69,16 @@ class m210919_171515_create_orders_table extends Migration
     public function safeDown()
     {
         // drops foreign key for table `{{%user}}`
-        $this->dropForeignKey(
-            '{{%fk-orders-created_at}}',
-            '{{%orders}}'
-        );
+        // $this->dropForeignKey(
+        //     '{{%fk-orders-created_at}}',
+        //     '{{%orders}}'
+        // );
 
         // drops index for column `created_at`
-        $this->dropIndex(
-            '{{%idx-orders-created_at}}',
-            '{{%orders}}'
-        );
+        // $this->dropIndex(
+        //     '{{%idx-orders-created_at}}',
+        //     '{{%orders}}'
+        // );
 
         // drops foreign key for table `{{%user}}`
         $this->dropForeignKey(

@@ -42,7 +42,7 @@ $this->params['breadcrumbs'][] = $this->title;
               }
             ],
             'name',
-            'description:ntext',
+            'description:raw',
             [
               'attribute' => 'price',
               'format' => 'currency'
@@ -70,7 +70,7 @@ $this->params['breadcrumbs'][] = $this->title;
               'format' => ['date'],
               'contentOptions' => ['style' => 'white-space:pre-line']
             ],
-            //'created_by',
+            // 'createdBy.username',
             //'updated_by',
 
             ['class' => 'yii\grid\ActionColumn'],
